@@ -12,11 +12,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlogService {
     private final BlogRepository blogRepository;
+
     //글 추가
-    public Article save(AddArticleRequest request){
+    public Article save(AddArticleRequest request) {
         return blogRepository.save(request.toEntity());
     }
-    public List<Article> findAll(){
+
+    public List<Article> findAll() {
         return blogRepository.findAll();
+    }
+
+    public Article findById(long id) {
+        return blogRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found" + id));
     }
 }
