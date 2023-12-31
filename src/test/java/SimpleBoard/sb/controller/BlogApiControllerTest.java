@@ -2,6 +2,7 @@ package SimpleBoard.sb.controller;
 
 import SimpleBoard.sb.domain.Article;
 import SimpleBoard.sb.dto.AddArticleRequest;
+import SimpleBoard.sb.dto.UpdateArticleRequest;
 import SimpleBoard.sb.repository.BlogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -17,12 +18,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.xml.transform.Result;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -78,5 +79,43 @@ class BlogApiControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].content").value(content))
                 .andExpect(jsonPath("$[0].title").value(title));
+    }
+
+    @Test
+    public void findArticle() throws Exception {
+        final String url = "/api/articles/{id}";
+        final String title = "제목";
+        final String content = "testContent";
+        Article testArticle = blogRepository.save(Article.builder().title(title).content(content).build());
+        final ResultActions resultActions = mockMvc.perform(get(url, testArticle.getId()));
+        resultActions.andExpect(status().isOk()).andExpect(jsonPath("$.content").value(content)).andExpect(jsonPath("$.title").value(title));
+    }
+
+    @Test
+    public void deleteArticle() throws Exception {
+        final String url = "/api/articles/{id}";
+        final String title = "제목";
+        final String content = "testContent";
+        Article testArticle = blogRepository.save(Article.builder().title(title).content(content).build());
+        mockMvc.perform(delete(url, testArticle.getId())).andExpect(status().isOk());
+        List<Article> articles = blogRepository.findAll();
+        assertThat(articles).isEmpty();
+
+    }
+
+    @Test
+    public void updateArticle() throws Exception {
+        final String url = "/api/articles/{id}";
+        final String title = "제목";
+        final String content = "testContent";
+        Article testArticle = blogRepository.save(Article.builder().title(title).content(content).build());
+        final String newTitle = "newTitle";
+        final String newContent = "newContent";
+        UpdateArticleRequest request = new UpdateArticleRequest(newTitle, newContent);
+        ResultActions result = mockMvc.perform(put(url, testArticle.getId()).contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(request)));
+        result.andExpect(status().isOk());
+        Article article = blogRepository.findById(testArticle.getId()).get();
+        assertThat(article.getTitle()).isEqualTo(newTitle);
+        assertThat(article.getContent()).isEqualTo(newContent);
     }
 }

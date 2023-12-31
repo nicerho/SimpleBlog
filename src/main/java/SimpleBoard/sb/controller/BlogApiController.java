@@ -3,6 +3,7 @@ package SimpleBoard.sb.controller;
 import SimpleBoard.sb.domain.Article;
 import SimpleBoard.sb.dto.AddArticleRequest;
 import SimpleBoard.sb.dto.ArticleResponse;
+import SimpleBoard.sb.dto.UpdateArticleRequest;
 import SimpleBoard.sb.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,5 +37,17 @@ public class BlogApiController {
     public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id){
         Article article = blogService.findById(id);
         return ResponseEntity.ok().body(new ArticleResponse(article));
+    }
+    @DeleteMapping("/api/articles/{id}")
+    public ResponseEntity<Void> deleteArticle(@PathVariable long id){
+        blogService.delete(id);
+
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping("/api/articles/{id}")
+    public ResponseEntity<Article> updateArticle(@PathVariable long id, @RequestBody UpdateArticleRequest request){
+        Article updateArticle = blogService.update(id,request);
+        return ResponseEntity.ok().body(updateArticle);
+
     }
 }
