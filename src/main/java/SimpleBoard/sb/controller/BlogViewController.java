@@ -13,7 +13,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlogViewController {
     private final BlogService blogService;
-
     @GetMapping("/articles")
     public String getArticles(Model model) {
         List<ArticleListViewResponse> articles = blogService.findAll().stream().map(ArticleListViewResponse::new).toList();
@@ -21,4 +20,8 @@ public class BlogViewController {
         System.out.println("test");
         return "articleList";
     }
+ @GetMapping("/hoho")
+ public String test(){
+        return "test";
+ }
 }
