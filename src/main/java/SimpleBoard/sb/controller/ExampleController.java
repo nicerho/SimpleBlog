@@ -21,7 +21,7 @@ public class ExampleController {
         person.setHobbies(List.of("1", "2"));
         model.addAttribute("testPerson", person);
         model.addAttribute("today", LocalDate.now());
-
+        System.out.println("test");
         return "example";
     }
 

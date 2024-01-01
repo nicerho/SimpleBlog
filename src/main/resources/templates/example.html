@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th=" http://www.thymeleaf.org ">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p th :text = " $ { # temporals.format ( today , ' yyyy - MM - dd ' ) } " > </p>
+<div th : object="${person}">
+    <p th : text ="이름 : *{name}"></p>
+    <p th : text ="나이 : *{age}"></p>
+    <ul th : each="hobby:*{hobbies}">
+        <span th : if="${hobby=='1'}">ㄹㄹ</span>
+    </ul>
+</div>
+</body>
+</html>
