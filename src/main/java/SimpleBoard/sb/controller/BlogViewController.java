@@ -25,7 +25,7 @@ public class BlogViewController {
         return "articleList";
     }
 
-    @GetMapping("articles/{id}")
+    @GetMapping("/articles/{id}")
     public String getArticle(@PathVariable Long id, Model model) {
         Article article = blogService.findById(id);
         model.addAttribute("article", new ArticleViewResponse(article));
